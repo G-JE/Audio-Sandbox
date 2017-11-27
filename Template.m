@@ -60,51 +60,75 @@ varargout{1} = handles.output;
 
 % --- Executes on button press in C.
 function C_Callback(hObject, eventdata, handles)
-
+audio = handles.Patches(handles.CPatch, 1:handles.PatchesLen(handles.CPatch));
+audio_out = PitchScaling(audio, 1);
+soundsc(audio_out, handles.FS);
 
 % --- Executes on button press in D.
 function D_Callback(hObject, eventdata, handles)
-
+audio = handles.Patches(handles.CPatch, 1:handles.PatchesLen(handles.CPatch));
+audio_out = PitchScaling(audio, 1.2);
+soundsc(audio_out, handles.FS);
 
 % --- Executes on button press in E.
 function E_Callback(hObject, eventdata, handles)
-
+audio = handles.Patches(handles.CPatch, 1:handles.PatchesLen(handles.CPatch));
+audio_out = PitchScaling(audio, 1.4);
+soundsc(audio_out, handles.FS);
 
 % --- Executes on button press in F.
 function F_Callback(hObject, eventdata, handles)
-
+audio = handles.Patches(handles.CPatch, 1:handles.PatchesLen(handles.CPatch));
+audio_out = PitchScaling(audio, 1.6);
+soundsc(audio_out, handles.FS);
 
 % --- Executes on button press in G.
 function G_Callback(hObject, eventdata, handles)
-
+audio = handles.Patches(handles.CPatch, 1:handles.PatchesLen(handles.CPatch));
+audio_out = PitchScaling(audio, 1.8);
+soundsc(audio_out, handles.FS);
 
 % --- Executes on button press in A.
 function A_Callback(hObject, eventdata, handles)
-
+audio = handles.Patches(handles.CPatch, 1:handles.PatchesLen(handles.CPatch));
+audio_out = PitchScaling(audio, 2);
+soundsc(audio_out, handles.FS);
 
 % --- Executes on button press in B.
 function B_Callback(hObject, eventdata, handles)
-
+audio = handles.Patches(handles.CPatch, 1:handles.PatchesLen(handles.CPatch));
+audio_out = PitchScaling(audio, 2.2);
+soundsc(audio_out, handles.FS);
 
 % --- Executes on button press in Cs.
 function Cs_Callback(hObject, eventdata, handles)
-
+audio = handles.Patches(handles.CPatch, 1:handles.PatchesLen(handles.CPatch));
+audio_out = PitchScaling(audio, 1.1);
+soundsc(audio_out, handles.FS);
 
 % --- Executes on button press in Ds.
 function Ds_Callback(hObject, eventdata, handles)
-
+audio = handles.Patches(handles.CPatch, 1:handles.PatchesLen(handles.CPatch));
+audio_out = PitchScaling(audio, 1.3);
+soundsc(audio_out, handles.FS);
 
 % --- Executes on button press in Fs.
 function Fs_Callback(hObject, eventdata, handles)
-
+audio = handles.Patches(handles.CPatch, 1:handles.PatchesLen(handles.CPatch));
+audio_out = PitchScaling(audio, 1.5);
+soundsc(audio_out, handles.FS);
 
 % --- Executes on button press in Gs.
 function Gs_Callback(hObject, eventdata, handles)
-
+audio = handles.Patches(handles.CPatch, 1:handles.PatchesLen(handles.CPatch));
+audio_out = PitchScaling(audio, 1.7);
+soundsc(audio_out, handles.FS);
 
 % --- Executes on button press in As.
 function As_Callback(hObject, eventdata, handles)
-
+audio = handles.Patches(handles.CPatch, 1:handles.PatchesLen(handles.CPatch));
+audio_out = PitchScaling(audio, 1.9);
+soundsc(audio_out, handles.FS);
 
 % --- Executes on button press in Record.
 function Record_Callback(hObject, eventdata, handles)
@@ -117,8 +141,9 @@ function Stop_Callback(hObject, eventdata, handles)
 stop(handles.recorder);
 p = handles.Patches(handles.CPatch,:);
 data = getaudiodata(handles.recorder);
+data = data(1000:length(data)-1000);
 handles.Patches(handles.CPatch,1:length(data)) = p(1:length(data)) + data';
-handles.PatchesLen(handles.CPatch) = length(data);
+handles.PatchesLen(handles.CPatch) = length(data-2000);
 guidata(hObject, handles);
 
 
