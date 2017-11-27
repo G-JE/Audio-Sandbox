@@ -1,0 +1,57 @@
+% Algorithm for pitch-scaling via time scale with resampling
+[signal, Fs] = audioread('test.mp3');
+DAFx_in = signal(:,1)';
+DAFx_in = DAFx_in(1:500000);
+
+sa = 256;
+N = 2048;
+
+M = ceil(length(DAFx_in)/sa);
+
+n1 = 512;
+n2 = 256;
+ss = round(sa*n1/n2);
+L = 256*(n1/n2)/2;
+
+DAFx_in(M*sa+N) = 0;
+Overlap = DAFx_in(1:N);
+
+for ni = M-1
+    grain=DAFx_in(ni*sa+1:N+ni*sa);
+    XCORRsegment = xcorr(grain(1:L), Overlap(1,ni*ss:ni*ss+(L-1)));
+    []
+end
+
+lfen = 2048;
+lfen2 = lfen/2;
+w1 = hanning(lfen);
+w2 = w1;
+
+lx = floor(lfen*n1/n2);
+x = 1+(0:lfen-1)'*lx/lfen;
+
+ix = floor(x);
+ix1 = ix + 1;
+dx = x-ix;
+dx1 = 1 - dx;
+
+lmax = max(lfen, lx);
+
+Overlap = Overlap';
+
+DAFx_out = zeros(length(DAFx_in), 1);
+
+pin = 0;
+pout = 0;
+pend = length(DAFx_in) - lmax;
+
+while pin < pend
+    grain2 = (Overlap(pin+ix).*dx1+Overlap(pin+ix1).*dx).*w1;
+    DAFx_out(pout+1:pount+lfen) = DAFx_out(pout+1:pout+lfen) + grain2;
+    pin = pin+n1;
+    pout = pout+n2;
+end
+
+DAFx_out = DAFx_out / max(abs(DAFx_out)) ;
+
+soundsc(DAFx_out, Fs);

@@ -2,11 +2,11 @@ function varargout = Template(varargin)
 
 gui_Singleton = 1;
 gui_State = struct('gui_Name',       mfilename, ...
-                   'gui_Singleton',  gui_Singleton, ...
-                   'gui_OpeningFcn', @Template_OpeningFcn, ...
-                   'gui_OutputFcn',  @Template_OutputFcn, ...
-                   'gui_LayoutFcn',  [] , ...
-                   'gui_Callback',   []);
+    'gui_Singleton',  gui_Singleton, ...
+    'gui_OpeningFcn', @Template_OpeningFcn, ...
+    'gui_OutputFcn',  @Template_OutputFcn, ...
+    'gui_LayoutFcn',  [] , ...
+    'gui_Callback',   []);
 if nargin && ischar(varargin{1})
     gui_State.gui_Callback = str2func(varargin{1});
 end
@@ -29,10 +29,13 @@ function Template_OpeningFcn(hObject, eventdata, handles, varargin)
 
 % Choose default command line output for Template
 handles.output = hObject;
-handles.track = zeros(0,1000000,1);
-handles.trackLength = 0;
-handles.FR = 44100;
+
+handles.FS = 44100;
 handles.BN = 16;
+
+handles.CPatch = 1;
+handles.Patches = zeros(5, 441000);
+handles.PatchesLen = zeros(5,1);
 
 %Will record mono audio signal
 handles.recorder = audiorecorder(handles.FR, handles.BN, 1);
@@ -45,7 +48,7 @@ guidata(hObject, handles);
 
 
 % --- Outputs from this function are returned to the command line.
-function varargout = Template_OutputFcn(hObject, eventdata, handles) 
+function varargout = Template_OutputFcn(hObject, eventdata, handles)
 % varargout  cell array for returning output args (see VARARGOUT);
 % hObject    handle to figure
 % eventdata  reserved - to be defined in a future version of MATLAB
@@ -57,105 +60,81 @@ varargout{1} = handles.output;
 
 % --- Executes on button press in C.
 function C_Callback(hObject, eventdata, handles)
-% hObject    handle to C (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
 
 
 % --- Executes on button press in D.
 function D_Callback(hObject, eventdata, handles)
-% hObject    handle to D (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
 
 
 % --- Executes on button press in E.
 function E_Callback(hObject, eventdata, handles)
-% hObject    handle to E (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
 
 
 % --- Executes on button press in F.
 function F_Callback(hObject, eventdata, handles)
-% hObject    handle to F (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
 
 
 % --- Executes on button press in G.
 function G_Callback(hObject, eventdata, handles)
-% hObject    handle to G (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
 
 
 % --- Executes on button press in A.
 function A_Callback(hObject, eventdata, handles)
-% hObject    handle to A (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
 
 
 % --- Executes on button press in B.
 function B_Callback(hObject, eventdata, handles)
-% hObject    handle to B (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
 
 
 % --- Executes on button press in Cs.
 function Cs_Callback(hObject, eventdata, handles)
-% hObject    handle to Cs (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
 
 
 % --- Executes on button press in Ds.
 function Ds_Callback(hObject, eventdata, handles)
-% hObject    handle to Ds (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
 
 
 % --- Executes on button press in Fs.
 function Fs_Callback(hObject, eventdata, handles)
-% hObject    handle to Fs (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
 
 
 % --- Executes on button press in Gs.
 function Gs_Callback(hObject, eventdata, handles)
-% hObject    handle to Gs (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
 
 
 % --- Executes on button press in As.
 function As_Callback(hObject, eventdata, handles)
-% hObject    handle to As (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
 
 
 % --- Executes on button press in Record.
 function Record_Callback(hObject, eventdata, handles)
 record(handles.recorder);
 
+
 function Stop_Callback(hObject, eventdata, handles)
 stop(handles.recorder);
-data = getaudiodata(handles.recorder,'')
+p = handles.Patches;
+data = getaudiodata(handles.recorder);
+handles.Patches(handles.CPatch,1:length(data)) = p(0:length(data)) + data;
 
-% --- Executes on key press with focus on C and none of its controls.
-function C_KeyPressFcn(hObject, eventdata, handles)
-% hObject    handle to C (see GCBO)
-% eventdata  structure with the following fields (see MATLAB.UI.CONTROL.UICONTROL)
-%	Key: name of the key that was pressed, in lower case
-%	Character: character interpretation of the key(s) that was pressed
-%	Modifier: name(s) of the modifier key(s) (i.e., control, shift) pressed
-% handles    structure with handles and user data (see GUIDATA)
-disp('Pressed');
 
-function C_KeyReleaseFcn(hObject, eventdata, handles)
-disp('released');
+% --- Executes on button press in Patch1.
+function Patch1_Callback(hObject, eventdata, handles)
+handles.CPatch = 1;
+
+% --- Executes on button press in Patch2.
+function Patch2_Callback(hObject, eventdata, handles)
+handles.CPatch = 2;
+
+% --- Executes on button press in Patch3.
+function Patch3_Callback(hObject, eventdata, handles)
+handles.CPatch = 3;
+
+% --- Executes on button press in Patch4.
+function Patch4_Callback(hObject, eventdata, handles)
+handles.CPatch = 4;
+
+% --- Executes on button press in Patch5.
+function Patch5_Callback(hObject, eventdata, handles)
+handles.CPatch = 5;
+
