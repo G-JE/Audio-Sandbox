@@ -8,7 +8,6 @@ w1 = hanning(WLen);
 w2 = w1;
 order = 50;
 
-ral = n2/n1;
 WLen2 = WLen/2;
 lx = floor(WLen*n1/n2);
 x = 1 + (0:lx-1)'*WLen/lx;

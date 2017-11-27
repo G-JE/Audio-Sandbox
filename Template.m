@@ -21,13 +21,7 @@ end
 
 % --- Executes just before Template is made visible.
 function Template_OpeningFcn(hObject, eventdata, handles, varargin)
-% This function has no output args, see OutputFcn.
-% hObject    handle to figure
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-% varargin   command line arguments to Template (see VARARGIN)
 
-% Choose default command line output for Template
 handles.output = hObject;
 
 handles.FS = 44100;
@@ -43,43 +37,34 @@ handles.recorder = audiorecorder(handles.FS, handles.BN, 1);
 % Update handles structure
 guidata(hObject, handles);
 
-% UIWAIT makes Template wait for user response (see UIRESUME)
-% uiwait(handles.figure1);
-
 
 % --- Outputs from this function are returned to the command line.
 function varargout = Template_OutputFcn(hObject, eventdata, handles)
-% varargout  cell array for returning output args (see VARARGOUT);
-% hObject    handle to figure
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Get default command line output from handles structure
 varargout{1} = handles.output;
 
 
 % --- Executes on button press in C.
 function C_Callback(hObject, eventdata, handles)
 audio = handles.Patches(handles.CPatch, 1:handles.PatchesLen(handles.CPatch));
-audio_out = PitchScaling(audio, 1);
+audio_out = formantPreservation(audio, 1);
 soundsc(audio_out, handles.FS);
 
 % --- Executes on button press in D.
 function D_Callback(hObject, eventdata, handles)
 audio = handles.Patches(handles.CPatch, 1:handles.PatchesLen(handles.CPatch));
-audio_out = PitchScaling(audio, 1.2);
+audio_out = formantPreservation(audio, 1.2);
 soundsc(audio_out, handles.FS);
 
 % --- Executes on button press in E.
 function E_Callback(hObject, eventdata, handles)
 audio = handles.Patches(handles.CPatch, 1:handles.PatchesLen(handles.CPatch));
-audio_out = PitchScaling(audio, 1.4);
+audio_out = formantPreservation(audio, 1.4);
 soundsc(audio_out, handles.FS);
 
 % --- Executes on button press in F.
 function F_Callback(hObject, eventdata, handles)
 audio = handles.Patches(handles.CPatch, 1:handles.PatchesLen(handles.CPatch));
-audio_out = PitchScaling(audio, 1.6);
+audio_out = formantPreservation(audio, 1.6);
 soundsc(audio_out, handles.FS);
 
 % --- Executes on button press in G.
@@ -141,35 +126,56 @@ function Stop_Callback(hObject, eventdata, handles)
 stop(handles.recorder);
 p = handles.Patches(handles.CPatch,:);
 data = getaudiodata(handles.recorder);
-data = data(1000:length(data)-1000);
+data = data(5000:length(data)-5000);
 handles.Patches(handles.CPatch,1:length(data)) = p(1:length(data)) + data';
-handles.PatchesLen(handles.CPatch) = length(data-2000);
+handles.PatchesLen(handles.CPatch) = length(data);
+n = 0:length(data)-1;
+plot(n, data);
+
+xlabel('Samples');
+ylabel('Normalized Magnitude');
+
 guidata(hObject, handles);
 
 
 % --- Executes on button press in Patch1.
 function Patch1_Callback(hObject, eventdata, handles)
 handles.CPatch = 1;
+data = handles.Patches(handles.CPatch,:);
+n = 0:length(data)-1;
+plot(n, data);
 guidata(hObject, handles);
 
 % --- Executes on button press in Patch2.
 function Patch2_Callback(hObject, eventdata, handles)
 handles.CPatch = 2;
+data = handles.Patches(handles.CPatch,:);
+n = 0:length(data)-1;
+plot(n, data);
 guidata(hObject, handles);
 
 % --- Executes on button press in Patch3.
 function Patch3_Callback(hObject, eventdata, handles)
 handles.CPatch = 3;
+data = handles.Patches(handles.CPatch,:);
+n = 0:length(data)-1;
+plot(n, data);
 guidata(hObject, handles);
 
 % --- Executes on button press in Patch4.
 function Patch4_Callback(hObject, eventdata, handles)
 handles.CPatch = 4;
+data = handles.Patches(handles.CPatch,:);
+n = 0:length(data)-1;
+plot(n, data);
 guidata(hObject, handles);
 
 % --- Executes on button press in Patch5.
 function Patch5_Callback(hObject, eventdata, handles)
 handles.CPatch = 5;
+data = handles.Patches(handles.CPatch,:);
+n = 0:length(data)-1;
+plot(n, data);
 guidata(hObject, handles);
 
 
@@ -177,3 +183,33 @@ guidata(hObject, handles);
 function Play_Callback(hObject, eventdata, handles)
 data = handles.Patches(handles.CPatch, 1:handles.PatchesLen(handles.CPatch));
 soundsc(data, handles.FS);
+
+
+% --- Executes on slider movement.
+function Length_Callback(hObject, eventdata, handles)
+
+
+
+% --- Executes during object creation, after setting all properties.
+function Length_CreateFcn(hObject, eventdata, handles)
+if isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor',[.9 .9 .9]);
+end
+
+
+% --- Executes on slider movement.
+function StartPosition_Callback(hObject, eventdata, handles)
+
+
+
+% --- Executes during object creation, after setting all properties.
+function StartPosition_CreateFcn(hObject, eventdata, handles)
+if isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor',[.9 .9 .9]);
+end
+
+
+% --- Executes during object creation, after setting all properties.
+function AudioData_CreateFcn(hObject, eventdata, handles)
+xlabel('Sample');
+ylabel('Magnitude');
