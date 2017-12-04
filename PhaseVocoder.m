@@ -24,6 +24,7 @@ pend = length(audio)-WLen;
 while pin < pend
     grain = audio(pin+1: pin+WLen).*w1;
     f = fft(fftshift(grain));
+    plot(f,0:WLen-1);
     r = abs(f);
     phi = angle(f);
     ft = (r.*exp(1i*phi));

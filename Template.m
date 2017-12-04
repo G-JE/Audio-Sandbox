@@ -33,7 +33,6 @@ handles.PatchesLen = zeros(5,1);
 
 %Will record mono audio signal
 handles.recorder = audiorecorder(handles.FS, handles.BN, 1);
-
 % Update handles structure
 guidata(hObject, handles);
 
@@ -48,6 +47,8 @@ function C_Callback(hObject, eventdata, handles)
 audio = handles.Patches(handles.CPatch, 1:handles.PatchesLen(handles.CPatch));
 audio_out = formantPreservation(audio, 1);
 soundsc(audio_out, handles.FS);
+
+
 
 % --- Executes on button press in D.
 function D_Callback(hObject, eventdata, handles)

@@ -58,4 +58,5 @@ end
 
 
 audio_out = DAFx_out(WLen+1: WLen+L) / max(abs(DAFx_out));
-
+spectrogram(audio_out, w1);
+hold on;
